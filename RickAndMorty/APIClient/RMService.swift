@@ -34,7 +34,6 @@ final class RMService {
                 }
                 
                 do {
-                    print(String(describing: urlRequest))
                     let result = try JSONDecoder().decode(type.self, from: data)
                     completion(.success(result))
                 

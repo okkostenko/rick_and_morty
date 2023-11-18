@@ -73,10 +73,24 @@ final class RMRequest {
         
         if trimmed.contains("?") {
             let components = trimmed.components(separatedBy: "?")
-            if !components.isEmpty {
+            
+            if !components.isEmpty, components.count >= 2 {
                 let enpointString = components[0]
+                let queryItemsString = components[1]
+                let queryItems: [URLQueryItem] = queryItemsString.components(separatedBy: "&").compactMap({
+                    guard $0.contains("=") else {
+                        return nil
+                    }
+                    let parts = $0.components(separatedBy: "=")
+                    
+                    return URLQueryItem(
+                        name: parts[0],
+                        value: parts[1]
+                    )
+                })
+                
                 if let rmEnpoint = RMEnpoint(rawValue: enpointString) {
-                    self.init(endpoint: rmEnpoint)
+                    self.init(endpoint: rmEnpoint, queryParameters: queryItems)
                     return
                 }
             }
